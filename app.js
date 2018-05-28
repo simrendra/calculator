@@ -1,6 +1,12 @@
 var calc = (function() {
 
-    var inputNumber, oldSum, currentOperation;
+    var inputNumber, oldSum, currentOperation,
+        operationsMap = {
+            43: addition,
+            45: substraction,
+            42: multiplication,
+            47: division
+        };
 
     function init() {
         document.onreadystatechange = function() {
@@ -29,12 +35,24 @@ var calc = (function() {
                 // decimal point is inserted
                 isInputDecimal() ? '' : appendNumber('.');
             break;
+            case code === 61:
+                performOperation(); 
+            break;
+            default:
+                currentOperation = operationsMap[code];
+                oldSum = inputNumber.value;
+                inputNumber.value = 0;
+            break;
             
         }
     }
     function performOperation() {
         if(currentOperation) {
-            currentOperation.call(null, oldSum, inputNumber.value);
+            let input = parseNumber(inputNumber.value);
+            oldSum = parseNumber(oldSum);
+            oldSum = currentOperation.call(null, oldSum, input);
+            inputNumber.value = oldSum;
+            currentOperation = null;
         }
     }
 
@@ -51,7 +69,7 @@ var calc = (function() {
         return a + b;
     }
 
-    function addition(a, b) {
+    function substraction(a, b) {
         return a - b;
     }
 
@@ -59,8 +77,12 @@ var calc = (function() {
         return a * b;
     }
 
-    function multiplication(a, b) {
+    function division(a, b) {
         return a / b;
+    }
+
+    function parseNumber(num) {
+        return Number.isInteger(num) ? parseInt(num) : parseFloat(num);
     }
 
     return {
