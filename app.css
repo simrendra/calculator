@@ -1,6 +1,53 @@
-.row {
-    display: flex;
+
+.body {
+    background-color:yellow;
 }
-.col-1 {
-    flex: 1;
+body * {
+    font-size: 30px;
 }
+
+section.content {
+    width:400px;
+    height: 400px;
+    position: relative;
+    margin: auto;
+    margin-top: 150px;
+}
+button {
+    height: 100px;
+    width: 100px;
+    padding: 5px;
+    border: solid 1px darkgrey;
+    cursor: pointer;
+}
+.row-4 {
+    display: grid;
+}
+
+.row-4 .col-1 {
+    grid-column: 1/2;
+}
+.row-4 .col-2 {
+    grid-column: 2;
+}
+
+.row-4 .col-3 {
+    grid-column: 3;
+}
+
+.row-4 .col-4 {
+    grid-column: 4;
+}
+
+#result {
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    
+}
+
+button.operator {
+    background-color: orange;
+}
+
