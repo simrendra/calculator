@@ -40,10 +40,11 @@ button {
 }
 
 #result {
-    height: 50px;
+    height: 100px;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
+    font-size: 50px;
     
 }
 

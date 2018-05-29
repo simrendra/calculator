@@ -18,6 +18,8 @@ var calc = (function() {
                 document.querySelectorAll('button').forEach(function(b) {
                     b.addEventListener('click', handleButtonClickEvent);
                 });
+                
+                document.addEventListener('keyup', handleKeyPressEvent);
             }
         }
     }
@@ -25,27 +27,13 @@ var calc = (function() {
     function handleButtonClickEvent(e) {
         let ch = e.target.innerText,
             code = ch.charCodeAt(0);
-        
-        switch(true) {
-            case code > 47 && code < 58:
-                //input is a number
-                appendNumber(ch);
-            break;
-            case code === 46:
-                // decimal point is inserted
-                isInputDecimal() ? '' : appendNumber('.');
-            break;
-            case code === 61:
-                performOperation(); 
-            break;
-            default:
-                currentOperation = operationsMap[code];
-                oldSum = inputNumber.value;
-                inputNumber.value = 0;
-            break;
-            
-        }
+            processInput(ch, code);
     }
+
+    function handleKeyPressEvent(e) {
+       processInput(e.key, e.key.charCodeAt(0));
+    }
+
     function performOperation() {
         if(currentOperation) {
             let input = parseNumber(inputNumber.value);
@@ -85,7 +73,30 @@ var calc = (function() {
         return Number.isInteger(num) ? parseInt(num) : parseFloat(num);
     }
 
+    function processInput(ch, code) {
+        switch(true) {
+            case code > 47 && code < 58:
+                //input is a number
+                appendNumber(ch);
+            break;
+            case code === 46:
+                // decimal point is inserted
+                isInputDecimal() ? '' : appendNumber('.');
+            break;
+            case code === 61 || code === 69:
+                performOperation(); 
+            break;
+            case [42,43,45,47].indexOf(code) > -1:
+                currentOperation = operationsMap[code];
+                oldSum = inputNumber.value;
+                inputNumber.value = 0;
+            break;
+        }
+
+    }
+
     return {
-        init: init
+        init: init,
+        clearText: function clearText() { inputNumber.value = oldSum = 0; }
     }
 })();
