@@ -6,14 +6,15 @@ var calc = (function() {
             45: substraction,
             42: multiplication,
             47: division
-        };
+        },
+        total = 0,
+        operand = null;
 
     function init() {
         document.onreadystatechange = function() {
             if(document.readyState === 'complete') {
                 inputNumber  = document.getElementById('result');
-                inputNumber.value = 0;
-                oldSum = 0;
+                inputNumber.value = total;
 
                 document.querySelectorAll('button').forEach(function(b) {
                     b.addEventListener('click', handleButtonClickEvent);
@@ -35,18 +36,22 @@ var calc = (function() {
     }
 
     function performOperation() {
-        if(currentOperation) {
-            let input = parseNumber(inputNumber.value);
-            oldSum = parseNumber(oldSum);
-            oldSum = currentOperation.call(null, oldSum, input);
-            inputNumber.value = oldSum;
-            currentOperation = null;
+        if(total !== null && operand !== null) {
+            total = parseNumber(total);
+            operand = parseNumber(operand);
+            total = currentOperation.call(null, total, operand);
+            inputNumber.value = total;
+            operand = null;
         }
     }
 
     function appendNumber(num) {
-        let oldNum = inputNumber.value;  
-        inputNumber.value =  oldNum == 0 ? num : oldNum + num;
+        if(parseInt(operand)) {
+            inputNumber.value = inputNumber.value.concat(num);
+        } else {
+            inputNumber.value = num;
+        }
+        operand = inputNumber.value;
     }
 
     function isInputDecimal() {
@@ -84,12 +89,12 @@ var calc = (function() {
                 isInputDecimal() ? '' : appendNumber('.');
             break;
             case code === 61 || code === 69:
-                performOperation(); 
+                performOperation();
             break;
             case [42,43,45,47].indexOf(code) > -1:
                 currentOperation = operationsMap[code];
-                oldSum = inputNumber.value;
-                inputNumber.value = 0;
+                total = inputNumber.value;
+                
             break;
         }
 
@@ -97,6 +102,11 @@ var calc = (function() {
 
     return {
         init: init,
-        clearText: function clearText() { inputNumber.value = oldSum = 0; }
+        clearText: function clearText() { 
+            total = 0;
+            operand = null;
+            currentOperation = null;
+            inputNumber.value = total
+        }
     }
 })();
